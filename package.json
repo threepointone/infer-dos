@@ -21,9 +21,17 @@
     "check": "biome check && tsc && vitest --watch false",
     "build": "npx tsup src --format esm --dts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "durable-objects",
+    "typescript",
+    "cloudflare"
+  ],
+  "author": "Sunil Pai <spai@cloudflare.com>",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
