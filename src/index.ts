@@ -1,5 +1,5 @@
 import { dirname, resolve } from "node:path";
-import * as ts from "typescript";
+import ts from "typescript";
 
 /**
  * Recursively check if a type or any of its base types is (or implements) DurableObject

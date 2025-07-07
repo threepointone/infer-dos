@@ -1,6 +1,6 @@
 {
   "name": "infer-dos",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "a helper tool to infer the Durable Objects of a given file",
   "bin": {
     "infer-dos": "./dist/cli.js"
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "check": "biome check && tsc && vitest --watch false",
-    "build": "npx tsc src/* --outdir dist --module commonjs"
+    "build": "npx tsup src --format esm --dts"
   },
   "keywords": [],
   "author": "",
