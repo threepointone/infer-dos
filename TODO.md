@@ -1,64 +1,142 @@
-# TODO: Implement infer-dos tool ✅ COMPLETED
+# Vite Plugin for Inferring Durable Object Bindings
 
-## Requirements Analysis
+## Overview
 
-- [x] Read README and understand requirements
-- [x] Analyze fixture examples to understand expected behavior
+Create a Vite plugin that automatically infers Durable Object classes from TypeScript files and updates `wrangler.jsonc` configuration files with the appropriate bindings.
 
-## Implementation Plan
+## Plan of Action
 
-- [x] Set up TypeScript compiler API to parse and analyze TypeScript files
-- [x] Implement logic to detect DurableObject classes:
-  - [x] Classes that extend `DurableObject` from "cloudflare:workers"
-  - [x] Classes that implement `DurableObject` interface (global or imported)
-  - [x] Classes that extend other classes that are DurableObjects (transitive detection)
-- [x] Handle command line arguments to accept input file path
-- [x] Output results as JSON array of class names
-- [x] Add proper error handling and validation
+### Phase 1: Core Infrastructure
 
-## Technical Approach
+- [ ] **Set up plugin structure**
 
-- [x] Use TypeScript compiler API for type checking and analysis
-- [x] Create a program that can:
-  - [x] Parse TypeScript files
-  - [x] Get type information for all exports
-  - [x] Check inheritance chains for DurableObject compatibility
-  - [x] Handle both extends and implements relationships
-- [x] Support the three test cases:
-  - [x] Direct extends of DurableObject
-  - [x] Implements DurableObject interface
-  - [x] Transitive extends (Server, Agent, Actor classes)
+  - [ ] Create basic Vite plugin skeleton in `src/vite-plugin.ts`
+  - [ ] Define plugin options interface
+  - [ ] Set up plugin lifecycle hooks (buildStart, transform, closeBundle)
 
-## Implementation Steps
+- [x] **Create TypeScript AST parser** ✅ **COMPLETED**
+  - [x] Use TypeScript compiler API to parse source files
+  - [x] Identify Durable Object class definitions
+  - [x] Extract class names and metadata
+  - [x] Handle imports and exports
 
-1. ✅ Set up TypeScript compiler API integration
-2. ✅ Create main analysis function
-3. ✅ Implement DurableObject detection logic
-4. ✅ Add command line interface
-5. ✅ Test with provided fixtures
-6. ✅ Add error handling and edge cases
+### Phase 2: Durable Object Detection ✅ **COMPLETED**
 
-## Final Implementation Summary
+All Durable Object detection functionality is implemented in `src/index.ts` via the `getDurableObjectClassNames` function.
 
-### Key Features Implemented:
+### Phase 3: Wrangler Configuration Management
 
-- **Real tsconfig.json Integration**: Uses the project's actual TypeScript configuration and type definitions
-- **Direct DurableObject Detection**: Detects classes that directly extend or implement `DurableObject`
-- **Transitive Detection**: Detects classes that extend other classes (like `Server`, `Agent`, `Actor`) that ultimately extend `DurableObject`
-- **Generic Type Support**: Handles generic type parameters in inheritance chains
-- **Clean Output**: Returns JSON array of class names as specified
+- [ ] **Parse existing wrangler.jsonc**
 
-### Test Results:
+  - [ ] Read and parse JSONC files
+  - [ ] Preserve existing configuration
+  - [ ] Handle comments and formatting
+  - [ ] Validate JSONC structure
 
-- ✅ `fixtures/01 class/input.ts` → `["MyDurableObject"]`
-- ✅ `fixtures/02 type/input.ts` → `["MyDurableObject"]`
-- ✅ `fixtures/03 extends/input.ts` → `["MyServer","MyAgent","MyActor"]`
+- [ ] **Generate durable_object_bindings**
 
-### Technical Solution:
+  - [ ] Create binding entries for each detected Durable Object
+  - [ ] Format: `{ "name": "ClassName", "class_name": "ClassName" }` (class name = binding name)
+  - [ ] Merge with existing bindings (avoid duplicates)
+  - [ ] Preserve existing binding order and formatting
 
-- Uses TypeScript's `parseJsonConfigFileContent` to load real project configuration
-- Implements recursive type checking with both `getBaseTypes()` and manual heritage clause resolution
-- Handles edge cases where generic types prevent automatic inheritance chain resolution
-- Provides robust error handling for file parsing and type checking issues
+- [ ] **Write updated configuration**
+  - [ ] Update `wrangler.jsonc` with new bindings
+  - [ ] Preserve file formatting and comments
+  - [ ] Handle backup/rollback scenarios
+  - [ ] Provide user feedback on changes
 
-The implementation is now complete and handles all the requirements specified in the README!
+### Phase 4: Plugin Integration
+
+- [ ] **Vite plugin hooks**
+
+  - [ ] `buildStart`: Scan for Durable Objects and update wrangler.jsonc
+  - [ ] `transform`: Optionally transform files during build
+  - [ ] `closeBundle`: Final validation and cleanup
+  - [ ] Handle watch mode for development
+
+- [ ] **Configuration options**
+  - [ ] `wranglerConfigPath`: Path to wrangler.jsonc file
+  - [ ] `autoUpdate`: Whether to automatically update wrangler.jsonc
+  - [ ] `backup`: Whether to create backup before modifications
+  - [ ] `verbose`: Enable detailed logging
+
+### Phase 5: Error Handling & Validation
+
+- [ ] **Input validation**
+
+  - [ ] Validate TypeScript file existence and syntax
+  - [ ] Check wrangler.jsonc file permissions
+  - [ ] Validate plugin configuration options
+  - [ ] Handle malformed JSONC files
+
+- [ ] **Error recovery**
+  - [ ] Graceful handling of parsing errors
+  - [ ] Rollback changes on critical errors
+  - [ ] Provide helpful error messages
+  - [ ] Log warnings for potential issues
+
+### Phase 6: Testing & Documentation
+
+- [ ] **Create test fixtures**
+
+  - [ ] Sample TypeScript files with Durable Objects
+  - [ ] Various import/export patterns
+  - [ ] Edge cases and error scenarios
+  - [ ] Expected wrangler.jsonc outputs
+
+- [ ] **Write tests**
+
+  - [ ] Unit tests for AST parsing
+  - [ ] Integration tests for plugin functionality
+  - [ ] Error handling tests
+  - [ ] Performance tests for large codebases
+
+- [ ] **Documentation**
+  - [ ] Plugin usage examples
+  - [ ] Configuration options reference
+  - [ ] Troubleshooting guide
+  - [ ] Migration guide for existing projects
+
+### Phase 7: Advanced Features
+
+- [ ] **Enhanced detection** (Future enhancements)
+
+  - [ ] Support for abstract classes and interfaces
+  - [ ] Detect Durable Objects in dependencies
+  - [ ] Handle barrel exports and re-exports
+  - [ ] Support for TypeScript path mapping
+  - [ ] Support custom binding name annotations (e.g., `@binding("custom-name")`)
+
+- [ ] **Performance optimizations**
+
+  - [ ] Incremental scanning (only changed files)
+  - [ ] Caching of parsed ASTs
+  - [ ] Parallel processing for large codebases
+  - [ ] Memory usage optimization
+
+- [ ] **Developer experience**
+  - [ ] CLI tool for standalone usage
+  - [ ] VS Code extension integration
+  - [ ] Interactive mode for manual review
+  - [ ] Dry-run mode for previewing changes
+
+## Implementation Order
+
+1. ✅ **COMPLETED**: TypeScript AST parsing and Durable Object detection (`getDurableObjectClassNames` in `src/index.ts`)
+2. Create basic Vite plugin structure in `src/vite-plugin.ts`
+3. Add wrangler.jsonc reading/writing capabilities
+4. Integrate into Vite plugin lifecycle
+5. Add error handling and validation
+6. Create tests and documentation
+7. Add advanced features and optimizations
+
+## Success Criteria
+
+- [x] Plugin correctly identifies Durable Object classes in TypeScript files ✅ **COMPLETED**
+- [ ] Automatically updates wrangler.jsonc with proper binding configuration
+- [ ] Preserves existing configuration and formatting
+- [ ] Provides clear error messages and validation
+- [ ] Works seamlessly with Vite build process
+- [ ] Comprehensive test coverage
+- [ ] Well-documented and easy to use
