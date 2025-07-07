@@ -1,6 +1,6 @@
 {
   "name": "infer-dos",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a helper tool to infer the Durable Objects of a given file",
   "homepage": "https://github.com/threepointone/infer-dos",
   "repository": {
