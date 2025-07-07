@@ -111,7 +111,7 @@ function isDurableObjectClass(
 /**
  * Analyze a TypeScript file to find DurableObject classes
  */
-function analyzeFile(filePath: string): string[] {
+export function getDurableObjectClassNames(filePath: string): string[] {
   // Find and parse the nearest tsconfig.json
   const configPath = ts.findConfigFile(
     dirname(resolve(filePath)),
@@ -168,11 +168,4 @@ function analyzeFile(filePath: string): string[] {
 
   visitNode(sourceFile, typeChecker, durableObjectClasses);
   return durableObjectClasses;
-}
-
-/**
- * Main function
- */
-export function getDurableObjectClassNames(inputFile: string) {
-  return analyzeFile(inputFile);
 }
