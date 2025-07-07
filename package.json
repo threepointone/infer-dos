@@ -1,6 +1,6 @@
 {
   "name": "infer-dos",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a helper tool to infer the Durable Objects of a given file",
   "bin": {
     "infer-dos": "./dist/cli.js"
