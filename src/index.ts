@@ -7,7 +7,7 @@ import ts from "typescript";
 function isOrExtendsDurableObject(
   type: ts.Type,
   typeChecker: ts.TypeChecker,
-  visited = new Set<ts.Type>(),
+  visited = new Set<ts.Type>()
 ): boolean {
   if (visited.has(type)) return false;
   visited.add(type);
@@ -38,7 +38,7 @@ function isOrExtendsDurableObject(
             for (const typeRef of heritage.types) {
               // Try to get the type and check recursively
               const baseType = typeChecker.getTypeAtLocation(
-                typeRef.expression,
+                typeRef.expression
               );
               if (
                 baseType &&
@@ -70,13 +70,13 @@ function isOrExtendsDurableObject(
 function visitNode(
   node: ts.Node,
   typeChecker: ts.TypeChecker,
-  durableObjectClasses: string[],
+  durableObjectClasses: string[]
 ) {
   if (ts.isClassDeclaration(node) && node.name) {
     const className = node.name.text;
     // Check if the class is exported
     const isExported = node.modifiers?.some(
-      (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+      (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword
     );
     if (isExported) {
       // Check if it extends or implements DurableObject
@@ -87,7 +87,7 @@ function visitNode(
     }
   }
   ts.forEachChild(node, (child) =>
-    visitNode(child, typeChecker, durableObjectClasses),
+    visitNode(child, typeChecker, durableObjectClasses)
   );
 }
 
@@ -96,7 +96,7 @@ function visitNode(
  */
 function isDurableObjectClass(
   classDeclaration: ts.ClassDeclaration,
-  typeChecker: ts.TypeChecker,
+  typeChecker: ts.TypeChecker
 ): boolean {
   const className = classDeclaration.name?.text;
   if (!className) return false;
@@ -116,7 +116,7 @@ function analyzeFile(filePath: string): string[] {
   const configPath = ts.findConfigFile(
     dirname(resolve(filePath)),
     ts.sys.fileExists,
-    "tsconfig.json",
+    "tsconfig.json"
   );
   if (!configPath) {
     throw new Error("Could not find a valid 'tsconfig.json'.");
@@ -128,7 +128,7 @@ function analyzeFile(filePath: string): string[] {
         getCurrentDirectory: ts.sys.getCurrentDirectory,
         getCanonicalFileName: (f) => f,
         getNewLine: () => "\n",
-      }),
+      })
     );
   }
   const configParseResult = ts.parseJsonConfigFileContent(
@@ -136,7 +136,7 @@ function analyzeFile(filePath: string): string[] {
     ts.sys,
     dirname(configPath),
     undefined,
-    configPath,
+    configPath
   );
   if (configParseResult.errors.length > 0) {
     throw new Error(
@@ -144,7 +144,7 @@ function analyzeFile(filePath: string): string[] {
         getCurrentDirectory: ts.sys.getCurrentDirectory,
         getCanonicalFileName: (f) => f,
         getNewLine: () => "\n",
-      }),
+      })
     );
   }
 
@@ -155,7 +155,7 @@ function analyzeFile(filePath: string): string[] {
 
   const program = ts.createProgram(
     configParseResult.fileNames,
-    configParseResult.options,
+    configParseResult.options
   );
   const typeChecker = program.getTypeChecker();
   const sourceFile = program.getSourceFile(resolve(filePath));
