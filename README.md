@@ -51,3 +51,8 @@ export class MyServer extends Server {} // Server extends DurableObject
 export class MyAgent extends Agent {} // Agent extends Server extends DurableObject
 export class MyActor extends Actor {} // Actor extends DurableObject
 ```
+
+## Next up:
+
+- maybe a vite plugin? so you'd never need to run the CLI
+- using the clouflare api to infer migrations as well
