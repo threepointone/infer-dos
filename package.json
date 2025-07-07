@@ -2,8 +2,24 @@
   "name": "infer-dos",
   "version": "1.0.0",
   "description": "a helper tool to infer the Durable Objects of a given file",
+  "bin": {
+    "infer-dos": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js",
+      "require": "./dist/cli.js"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "biome check && tsc && vitest --watch false",
+    "build": "npx tsc src/* --outdir dist --module commonjs"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +32,7 @@
     "@types/node": "^24.0.10",
     "agents": "^0.0.101",
     "partyserver": "^0.0.72",
+    "tsup": "^8.5.0",
     "vitest": "^3.2.4",
     "wrangler": "^4.23.0"
   },
