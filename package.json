@@ -1,0 +1,24 @@
+{
+  "name": "infer-dos",
+  "version": "1.0.0",
+  "description": "a helper tool to infer the Durable Objects of a given file",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.6",
+    "@cloudflare/workers-types": "^4.20250705.0",
+    "@types/node": "^24.0.10",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.23.0"
+  },
+  "dependencies": {
+    "@cloudflare/actors": "^0.0.1-beta.0",
+    "agents": "^0.0.101",
+    "partyserver": "^0.0.72"
+  }
+}
