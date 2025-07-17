@@ -1,0 +1,20 @@
+{
+  "name": "type-worker", // a comment next to the name
+  "main": "input.ts",
+  "compatibility_date": "2025-07-17",
+  // a trailing comment,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MyDurableObject",
+        "class_name": "MyDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MyDurableObject"]
+    }
+  ]
+}

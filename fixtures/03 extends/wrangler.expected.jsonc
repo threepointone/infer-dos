@@ -1,0 +1,28 @@
+{
+  "name": "extends-worker",
+  "main": "input.ts",
+  "compatibility_date": "2025-07-17",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MyServer",
+        "class_name": "MyServer"
+      },
+      {
+        "name": "MyAgent",
+        "class_name": "MyAgent"
+      },
+      {
+        "name": "MyActor",
+        "class_name": "MyActor"
+      }
+    ]
+  },
+  "migrations": [
+    // this block/comment existed before the migration was added
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MyServer", "MyAgent", "MyActor"]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "class-worker",
+  "main": "input.ts", // a comment next to the main entry point
+  // a comment for compatibility date
+  "compatibility_date": "2025-07-17"
+}

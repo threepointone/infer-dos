@@ -1,0 +1,8 @@
+{
+  "name": "extends-worker",
+  "main": "input.ts",
+  "compatibility_date": "2025-07-17",
+  "migrations": [
+    // this block/comment existed before the migration was added
+  ]
+}

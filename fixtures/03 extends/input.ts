@@ -1,6 +1,6 @@
-import { Server } from "partyserver";
-import { Agent } from "agents";
 import { Actor } from "@cloudflare/actors";
+import { Agent } from "agents";
+import { Server } from "partyserver";
 
 export class MyServer extends Server {
   constructor(state: DurableObjectState, env: {}) {

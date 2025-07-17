@@ -1,0 +1,6 @@
+{
+  "name": "type-worker", // a comment next to the name
+  "main": "input.ts",
+  "compatibility_date": "2025-07-17"
+  // a trailing comment
+}
