@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { getDurableObjectClassNames } from "./index.js";
+import { nanoid } from "nanoid";
 
 export interface InferDosOptions {
   /** Path to wrangler.jsonc file (default: "wrangler.jsonc") */
@@ -71,10 +72,27 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
       class_name: className,
     }));
 
+    const existingBindings =
+      // @ts-expect-error - config.durable_objects is not typed
+      config.durable_objects?.bindings.map((b) => b.name) || [];
+    const newBindings = bindings.filter(
+      (binding) => !existingBindings.includes(binding.name)
+    );
+
     // Update the config
     const updatedConfig = {
       ...config,
-      durable_object_bindings: bindings,
+      durable_objects: {
+        bindings: newBindings,
+      },
+      migrations: [
+        // @ts-expect-error - config.migrations is not typed
+        ...(config.migrations || []),
+        {
+          tag: `v-${nanoid(6)}`,
+          new_sqlite_classes: newBindings.map((b) => b.class_name),
+        },
+      ],
     };
 
     // Write updated config
