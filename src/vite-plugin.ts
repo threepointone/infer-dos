@@ -23,6 +23,7 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
     },
 
     buildStart() {
+      console.log("buildStart");
       try {
         updateWranglerConfig();
       } catch (error) {
@@ -75,9 +76,65 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
     const existingBindings =
       // @ts-expect-error - config.durable_objects is not typed
       config.durable_objects?.bindings.map((b) => b.name) || [];
+
     const newBindings = bindings.filter(
       (binding) => !existingBindings.includes(binding.name)
     );
+    // const removedBindings = existingBindings.filter(
+    //   // @ts-expect-error - config.durable_objects is not typed
+    //   (binding) => !bindings.some((b) => b.name === binding)
+    // );
+
+    const sqlite_classes_so_far = new Set();
+    // @ts-expect-error - config.migrations is not typed
+    for (const migration of config.migrations || []) {
+      for (const class_name of migration.new_sqlite_classes || []) {
+        sqlite_classes_so_far.add(class_name);
+      }
+      for (const class_name of migration.deleted_classes || []) {
+        sqlite_classes_so_far.delete(class_name);
+      }
+    }
+
+    const new_sqlite_classes = [];
+    const deleted_classes = [];
+
+    // any classes in sqlite_classes_so_far that are not in newBindings
+    for (const class_name of sqlite_classes_so_far) {
+      if (!bindings.some((b) => b.class_name === class_name)) {
+        deleted_classes.push(class_name);
+      }
+    }
+
+    // any classes in newBindings that are not in sqlite_classes_so_far
+    for (const class_name of bindings.map((b) => b.class_name)) {
+      if (!sqlite_classes_so_far.has(class_name)) {
+        new_sqlite_classes.push(class_name);
+      }
+    }
+
+    console.log(existingBindings, new_sqlite_classes, deleted_classes);
+
+    const migration =
+      new_sqlite_classes.length > 0 || deleted_classes.length > 0
+        ? {
+            tag: `v-${nanoid(6)}`,
+            ...(deleted_classes.length > 0
+              ? {
+                  deleted_classes,
+                }
+              : {}),
+            ...(new_sqlite_classes.length > 0
+              ? {
+                  new_sqlite_classes,
+                }
+              : {}),
+          }
+        : undefined;
+
+    if (newBindings.length === 0 && !migration) {
+      return;
+    }
 
     // Update the config
     const updatedConfig = {
@@ -88,10 +145,7 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
       migrations: [
         // @ts-expect-error - config.migrations is not typed
         ...(config.migrations || []),
-        {
-          tag: `v-${nanoid(6)}`,
-          new_sqlite_classes: newBindings.map((b) => b.class_name),
-        },
+        ...(migration ? [migration] : []),
       ],
     };
 
