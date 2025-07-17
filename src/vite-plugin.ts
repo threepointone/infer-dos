@@ -23,7 +23,6 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
     },
 
     buildStart() {
-      console.log("buildStart");
       try {
         updateWranglerConfig();
       } catch (error) {
@@ -112,8 +111,6 @@ export default function inferDosPlugin(options: InferDosOptions = {}): Plugin {
         new_sqlite_classes.push(class_name);
       }
     }
-
-    console.log(existingBindings, new_sqlite_classes, deleted_classes);
 
     const migration =
       new_sqlite_classes.length > 0 || deleted_classes.length > 0
